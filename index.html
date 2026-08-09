@@ -269,6 +269,61 @@
     .contact-section{padding:44px 24px; margin:0 12px;}
     .contact-grid{grid-template-columns:1fr;}
   }
+
+  /* MOBILE (phones) */
+  @media (max-width:600px){
+    .wrap{padding:0 16px;}
+    nav.wrap{height:64px;}
+    .brand{gap:8px;}
+    .brand img{height:32px;}
+    .brand-name{font-size:0.95rem;}
+    .nav-controls{gap:8px;}
+    .lang-toggle{padding:2px;}
+    .lang-toggle button{padding:5px 8px; font-size:0.7rem;}
+    .mode-toggle{width:44px; height:26px;}
+    .mode-toggle .knob{width:18px; height:18px; font-size:10px;}
+    body.dark .mode-toggle .knob{transform:translateX(18px);}
+    .nav-links{top:64px;}
+
+    .hero{padding:120px 0 60px;}
+    .hero h1{font-size:clamp(1.9rem,8vw,2.4rem); margin-bottom:16px;}
+    .hero p.lead{font-size:1rem; margin-bottom:26px;}
+    .hero-ctas{flex-direction:column; align-items:stretch; gap:12px;}
+    .hero-ctas .btn{justify-content:center; width:100%; padding:15px 24px;}
+    .sweep-ring{width:180px; height:180px;}
+    .sweep-core img{width:110px; height:110px; padding:10px;}
+
+    .section{padding:64px 0;}
+    .section-head{margin-bottom:32px;}
+    .section-head h2{font-size:1.6rem;}
+    .section-head p{font-size:0.95rem;}
+
+    .why-card{padding:24px 20px;}
+
+    .service-tabs{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:8px; margin-bottom:0; scrollbar-width:none;}
+    .service-tabs::-webkit-scrollbar{display:none;}
+    .service-tab{flex:0 0 auto; padding:10px 14px; font-size:0.82rem;}
+    .service-panel{padding:20px;}
+    .service-panel h3{font-size:1.25rem;}
+    .service-illustration{min-height:160px; padding:20px;}
+    .service-illustration svg{width:90px; height:90px;}
+
+    .contact-section{padding:36px 20px; margin:0 8px; border-radius:20px;}
+    .contact-card{padding:20px;}
+    .contact-section > .contact-inner > p{font-size:0.95rem;}
+
+    footer{padding:28px 0; font-size:0.8rem;}
+  }
+
+  /* SMALL PHONES */
+  @media (max-width:380px){
+    .brand-name{display:none;}
+    .lang-toggle button{padding:4px 6px;}
+    .hero h1{font-size:1.7rem;}
+    .sweep-ring{width:150px; height:150px;}
+    .sweep-core img{width:90px; height:90px;}
+    .contact-section{margin:0 4px; padding:30px 14px;}
+  }
 </style>
 </head>
 <body>
