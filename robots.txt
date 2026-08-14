@@ -1,55 +1,55 @@
-This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-<loc>https://www.dariscleaning.com/</loc>
-<priority>1.0</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/miksi</loc>
-<priority>0.7</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut</loc>
-<priority>0.9</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/kotisiivous</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/myymalasiivous</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/rappusiivous</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/ikkunoidenpesu</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/toimistosiivous</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/ravintolat</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/koulut</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/paivakotisiivous</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/palvelut/kauppatyo</loc>
-<priority>0.8</priority>
-</url>
-<url>
-<loc>https://www.dariscleaning.com/yhteystiedot</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://www.dariscleaning.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/miksi</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/kotisiivous</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/myymalasiivous</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/rappusiivous</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/ikkunoidenpesu</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/toimistosiivous</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/ravintolat</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/koulut</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/paivakotisiivous</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/palvelut/kauppatyo</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.dariscleaning.com/yhteystiedot</loc>
+    <priority>0.9</priority>
+  </url>
 </urlset>
