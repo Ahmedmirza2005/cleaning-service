@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.dariscleaning.fi/sitemap.xml
+Sitemap: https://www.dariscleaning.com/sitemap.xml
