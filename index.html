@@ -419,14 +419,14 @@
 
 <header>
   <nav class="wrap">
-    <a class="brand" href="/">
+    <a class="brand" href="#koti">
       <img src="daris-logo-light.png" alt="Daris Cleaning logo">
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="/" data-i18n="nav_home">Etusivu</a>
-      <a href="/miksi" data-i18n="nav_why">Miksi me</a>
-      <a href="/palvelut" data-i18n="nav_services">Palvelut</a>
-      <a href="/yhteystiedot" data-i18n="nav_contact">Yhteystiedot</a>
+      <a href="#koti" data-i18n="nav_home">Etusivu</a>
+      <a href="#miksi" data-i18n="nav_why">Miksi me</a>
+      <a href="#palvelut" data-i18n="nav_services">Palvelut</a>
+      <a href="#yhteystiedot" data-i18n="nav_contact">Yhteystiedot</a>
     </div>
     <div class="nav-controls">
       <div class="lang-toggle">
@@ -449,8 +449,8 @@
       <h1 data-i18n="hero_title">Puhtautta jolla<br><em>voit luottaa.</em></h1>
       <p class="lead" data-i18n="hero_lead">Daris Cleaning huolehtii kodeista, yrityksistä, kouluista ja päiväkodeista ammattitaidolla — joustavasti ja luotettavasti, juuri sinun aikataulusi mukaan.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="/yhteystiedot" data-i18n="hero_cta1">Ota yhteyttä</a>
-        <a class="btn btn-outline" href="/palvelut" data-i18n="hero_cta2">Katso palvelut</a>
+        <a class="btn btn-primary" href="#yhteystiedot" data-i18n="hero_cta1">Ota yhteyttä</a>
+        <a class="btn btn-outline" href="#palvelut" data-i18n="hero_cta2">Katso palvelut</a>
       </div>
     </div>
     <div class="hero-visual">
@@ -741,7 +741,7 @@ function buildServices(){
   });
 }
 
-function openService(id, push = true){
+function openService(id){
   document.querySelectorAll('.service-tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
   document.querySelectorAll('.service-panel').forEach(p => {
     if(p.dataset.id === id){
@@ -752,15 +752,7 @@ function openService(id, push = true){
       p.classList.remove('active');
     }
   });
-  if (push) {
-    const svc = services.find(s => s.id === id);
-    if (svc) history.pushState({}, '', '/palvelut/' + svc.slug);
-  }
 }
-  if (push) {
-    const svc = services.find(s => s.id === id);
-    if (svc) history.pushState({}, '', '/palvelut/' + svc.slug);
-  }
 
 
 function setLang(lang){
@@ -808,38 +800,19 @@ revealEls.forEach(el => io.observe(el));
 /* init */
 buildServices();
 
-/* ---------- REAL-PATH ROUTER ---------- */
-const routeSections = { "/": "koti", "/miksi": "miksi", "/palvelut": "palvelut", "/yhteystiedot": "yhteystiedot" };
-
+/* ---------- ANCHOR NAVIGATION ---------- */
 document.addEventListener('click', (e) => {
   const link = e.target.closest('a');
   if (!link) return;
   const href = link.getAttribute('href');
-  if (!href || href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel')) return;
-  if (href.startsWith('/')) {
-    e.preventDefault();
-    navigateTo(href);
+  if (!href || !href.startsWith('#')) return;
+  
+  e.preventDefault();
+  const target = document.querySelector(href);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' });
   }
 });
-
-function navigateTo(path, push = true) {
-  let sectionId = routeSections[path];
-  if (!sectionId && path.startsWith('/palvelut/')) sectionId = 'palvelut';
-  if (!sectionId) sectionId = 'koti';
-
-  document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-
-  if (path.startsWith('/palvelut/')) {
-    const slug = path.split('/')[2];
-    const svc = services.find(s => s.slug === slug);
-    if (svc) openService(svc.id, false);
-  }
-
-  if (push) history.pushState({}, '', path);
-}
-
-window.addEventListener('popstate', () => navigateTo(location.pathname, false));
-navigateTo(location.pathname, false);
 
 /* ---------- COOKIE CONSENT ---------- */
 (function () {
