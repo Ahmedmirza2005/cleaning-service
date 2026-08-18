@@ -419,14 +419,14 @@
 
 <header>
   <nav class="wrap">
-    <a class="brand" href="#koti">
+    <a class="brand" href="/">
       <img src="daris-logo-light.png" alt="Daris Cleaning logo">
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="#koti" data-i18n="nav_home">Etusivu</a>
-      <a href="#miksi" data-i18n="nav_why">Miksi me</a>
-      <a href="#palvelut" data-i18n="nav_services">Palvelut</a>
-      <a href="#yhteystiedot" data-i18n="nav_contact">Yhteystiedot</a>
+      <a href="/" data-i18n="nav_home">Etusivu</a>
+      <a href="/miksi" data-i18n="nav_why">Miksi me</a>
+      <a href="/palvelut" data-i18n="nav_services">Palvelut</a>
+      <a href="/yhteystiedot" data-i18n="nav_contact">Yhteystiedot</a>
     </div>
     <div class="nav-controls">
       <div class="lang-toggle">
@@ -449,8 +449,8 @@
       <h1 data-i18n="hero_title">Puhtautta jolla<br><em>voit luottaa.</em></h1>
       <p class="lead" data-i18n="hero_lead">Daris Cleaning huolehtii kodeista, yrityksistä, kouluista ja päiväkodeista ammattitaidolla — joustavasti ja luotettavasti, juuri sinun aikataulusi mukaan.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="#yhteystiedot" data-i18n="hero_cta1">Ota yhteyttä</a>
-        <a class="btn btn-outline" href="#palvelut" data-i18n="hero_cta2">Katso palvelut</a>
+        <a class="btn btn-primary" href="/yhteystiedot" data-i18n="hero_cta1">Ota yhteyttä</a>
+        <a class="btn btn-outline" href="/palvelut" data-i18n="hero_cta2">Katso palvelut</a>
       </div>
     </div>
     <div class="hero-visual">
@@ -710,7 +710,7 @@ function buildServices(){
     const item = document.createElement('div');
     item.className = 'service-item';
     item.dataset.id = s.id;
-    
+
     const tab = document.createElement('button');
     tab.className = 'service-tab' + (i===0 ? ' active':'');
     tab.dataset.id = s.id;
@@ -721,7 +721,7 @@ function buildServices(){
       </div>
       <div class="service-tab-toggle">▼</div>`;
     tab.addEventListener('click', () => openService(s.id));
-    
+
     const panel = document.createElement('div');
     panel.className = 'service-panel' + (i===0 ? ' active show':'');
     panel.dataset.id = s.id;
@@ -734,14 +734,19 @@ function buildServices(){
       <div class="service-illustration">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${s.icon}</svg>
       </div>`;
-    
+
     item.appendChild(tab);
     item.appendChild(panel);
     accordionEl.appendChild(item);
   });
 }
 
-function openService(id){
+/**
+ * Switch the visible service tab/panel.
+ * pushUrl=true (default, e.g. user clicked a tab) also updates the address bar.
+ * pushUrl=false is used by the router itself, which already owns the URL update.
+ */
+function openService(id, pushUrl = true){
   document.querySelectorAll('.service-tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
   document.querySelectorAll('.service-panel').forEach(p => {
     if(p.dataset.id === id){
@@ -752,8 +757,8 @@ function openService(id){
       p.classList.remove('active');
     }
   });
+  if (pushUrl) updateServiceUrl(id);
 }
-
 
 function setLang(lang){
   currentLang = lang;
@@ -763,8 +768,8 @@ function setLang(lang){
     if(translations[lang][key]) el.innerHTML = translations[lang][key];
   });
   document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-  buildServices();
   const activeId = document.querySelector('.service-tab.active')?.dataset.id || services[0].id;
+  buildServices();
   openService(activeId, false);
 }
 
@@ -797,22 +802,72 @@ const io = new IntersectionObserver((entries) => {
 }, {threshold:0.15});
 revealEls.forEach(el => io.observe(el));
 
-/* init */
+/* init accordion once on load */
 buildServices();
 
-/* ---------- ANCHOR NAVIGATION ---------- */
-document.addEventListener('click', (e) => {
-  const link = e.target.closest('a');
+/* ---------- ROUTER: give every section (and every service) its own real /path ---------- */
+const routes = {
+  "/": "koti",
+  "/miksi": "miksi",
+  "/palvelut": "palvelut",
+  "/yhteystiedot": "yhteystiedot"
+};
+
+const slugMap = {
+  kotisiivous: "home",
+  myymalasiivous: "shop",
+  rappusiivous: "stairs",
+  ikkunoidenpesu: "windows",
+  toimistosiivous: "office",
+  ravintolat: "restaurant",
+  koulut: "schools",
+  paivakotisiivous: "daycare",
+  kauppatyo: "kauppatyo"
+};
+function slugToServiceId(slug){ return slugMap[slug] || null; }
+function serviceIdToSlug(id){ return Object.keys(slugMap).find(k => slugMap[k] === id) || null; }
+
+function getSectionIdForPath(path){
+  if (path.startsWith("/palvelut/")) return "palvelut";
+  return routes[path] || "koti";
+}
+
+function updateServiceUrl(serviceId){
+  const slug = serviceIdToSlug(serviceId);
+  if (slug) history.pushState({}, "", "/palvelut/" + slug);
+}
+
+function navigateTo(path, push = true){
+  const sectionId = getSectionIdForPath(path);
+  document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+
+  if (path.startsWith("/palvelut/")) {
+    const slug = path.split("/")[2];
+    const serviceId = slugToServiceId(slug);
+    if (serviceId) openService(serviceId, false); // false: URL already correct, don't push again
+  }
+
+  if (push) history.pushState({}, "", path);
+}
+
+// Intercept clicks on internal links so navigation doesn't hard-reload the page
+document.addEventListener("click", (e) => {
+  const link = e.target.closest("a");
   if (!link) return;
-  const href = link.getAttribute('href');
-  if (!href || !href.startsWith('#')) return;
-  
-  e.preventDefault();
-  const target = document.querySelector(href);
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth' });
+  const href = link.getAttribute("href");
+  if (!href) return;
+  if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+  if (href.startsWith("/")) {
+    e.preventDefault();
+    navigateTo(href);
   }
 });
+
+// Handle browser Back / Forward buttons
+window.addEventListener("popstate", () => navigateTo(location.pathname, false));
+
+// On first load, jump straight to whatever path was requested (deep link support)
+navigateTo(location.pathname, false);
 
 /* ---------- COOKIE CONSENT ---------- */
 (function () {
