@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   Daris Cleaning — single-file production website.
-  Code map:  CONFIG → i18n → THEME → ROUTER → ANIMATIONS → FORM
+  Code map:  CONFIG → i18n → THEME → ROUTER → ANIMATIONS → CONTACT ACTIONS
   Server rewrite (so every /{lang}/… path serves this file):
     • Apache (.htaccess):  RewriteEngine On
                            RewriteCond %{REQUEST_FILENAME} !-f
@@ -261,18 +261,6 @@ header.site.hide{transform:translateY(-110%)}
 .ccard span{font-size:.95rem;word-break:break-word}
 .copybtn{margin-top:.3rem;align-self:flex-start;font-size:.8rem;border:1px solid var(--border);background:transparent;color:inherit;border-radius:999px;padding:.3em .7em;cursor:pointer}
 
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
-.field{display:flex;flex-direction:column;gap:.4rem}
-.field.full{grid-column:1/-1}
-.field label{font-size:.85rem;font-weight:600}
-.field input,.field select,.field textarea{font:inherit;padding:.85em 1em;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);min-height:48px;transition:border-color .2s}
-.field textarea{min-height:130px;resize:vertical}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);outline:none}
-.field .err{color:var(--accent);font-size:.8rem;min-height:1em}
-.hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden}
-.form-note{color:var(--muted);font-size:.85rem}
-.form-ok{background:color-mix(in srgb,var(--brand) 12%,transparent);border:1px solid var(--brand);border-radius:16px;padding:1.4rem;color:var(--text)}
-
 /* ============================= FOOTER ============================= */
 footer.site{background:var(--surface-2);border-top:1px solid var(--border);padding-block:clamp(48px,6vw,80px) 2rem}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2rem}
@@ -322,6 +310,7 @@ footer.site{background:var(--surface-2);border-top:1px solid var(--border);paddi
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px);align-items:center;margin-top:2rem}
 .about-grid .big-img{aspect-ratio:4/3;border-radius:24px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-md)}
 .about-grid .big-img img{width:100%;height:100%;object-fit:cover}
+.contact-info{max-width:760px;margin-top:2rem}
 .value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.5rem}
 .value{border:1px solid var(--border);border-radius:16px;padding:1.4rem;background:var(--surface)}
 .value b{font-family:"Fraunces";display:block;font-size:1.15rem;margin-bottom:.3rem}
@@ -329,14 +318,13 @@ footer.site{background:var(--surface-2);border-top:1px solid var(--border);paddi
 
 /* ============================= RESPONSIVE ============================= */
 @media(max-width:960px){
-  .hero-grid,.area-grid,.svc-detail,.about-grid,.contact-two{grid-template-columns:1fr}
+  .hero-grid,.area-grid,.svc-detail,.about-grid{grid-template-columns:1fr}
   .hero-art{order:-1;max-width:460px;margin-inline:auto}
   .nav-links{display:none}
   .burger{display:grid}
   .foot-grid{grid-template-columns:1fr 1fr}
   .value-grid{grid-template-columns:1fr}
   .contact-cards{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr}
   .mobar{display:flex}
   body{padding-bottom:72px}
   .acc-panel-inner{grid-template-columns:1fr;padding-left:4px}
@@ -604,7 +592,7 @@ const i18n = {
     },
     how:{eyebrow:"Näin se toimii",title:"Kolme askelta puhtaaseen",
       steps:[
-        {t:"Ota yhteyttä",d:"Soita, laita WhatsApp-viesti tai täytä lomake. Pyydämme muutaman tiedon tilasta ja tarpeista."},
+        {t:"Ota yhteyttä",d:"Soita tai lähetä sähköpostia tai WhatsApp-viesti. Kerro tilasta ja tarpeistasi."},
         {t:"Räätälöimme suunnitelman",d:"Teemme selkeän tarjouksen ja sovimme aikataulun, joka sopii juuri sinulle."},
         {t:"Me siivoamme, sinä rentoudut",d:"Tiimimme hoitaa työn huolella ja tarkistaa jäljen. Tyytyväisyys taataan."}
       ]},
@@ -622,10 +610,6 @@ const i18n = {
     contact:{eyebrow:"Ota yhteyttä",title:"Pyydä ilmainen tarjous",
       lead:"Kerro tilasta ja tarpeistasi, niin vastaamme pian.",
       call:"Soita meille",whatsapp:"Laita viesti",emailc:"Lähetä sähköpostia",copy:"Kopioi",copied:"Kopioitu!",
-      form:{name:"Nimi",email:"Sähköposti",phone:"Puhelin",service:"Palvelu",choose:"Valitse palvelu",message:"Viesti",send:"Lähetä viesti",
-        handoff:"Sähköpostiohjelmasi avautuu viesti valmiina. Lähetä viesti ohjelmassasi, tai lähetä sähköpostia osoitteeseen",
-        err:{name:"Kerro nimesi",email:"Anna kelvollinen sähköposti",message:"Kirjoita viesti"},
-        note:"Täytämme tietosi vain tarjousta varten emmekä jaa niitä eteenpäin."}
     },
     about:{eyebrow:"Meistä",title:"Pieni tiimi, iso sydän puhtaudelle",
       lead:"Daris Cleaning on paikallinen siivousalan yritys Uudellamaalla. Teemme työmme huolella, rehellisesti ja aina sovitusti.",
@@ -651,7 +635,7 @@ const i18n = {
       lead:"Regelbunden eller engångsstädning — välj ditt behov så sköter vi resten.",cta:"Läs mer"},
     how:{eyebrow:"Så fungerar det",title:"Tre steg till rent",
       steps:[
-        {t:"Kontakta oss",d:"Ring, skicka WhatsApp eller fyll i formuläret. Vi ber om några uppgifter om utrymmet och behoven."},
+        {t:"Kontakta oss",d:"Ring eller skicka e-post eller WhatsApp. Berätta om utrymmet och dina behov."},
         {t:"Vi skräddarsyr en plan",d:"Vi ger en tydlig offert och kommer överens om en tid som passar just dig."},
         {t:"Vi städar, du kopplar av",d:"Vårt team gör jobbet noggrant och kontrollerar resultatet. Nöjdhet garanteras."}
       ]},
@@ -668,10 +652,6 @@ const i18n = {
     contact:{eyebrow:"Kontakta oss",title:"Begär en gratis offert",
       lead:"Berätta om utrymmet och dina behov så svarar vi snart.",
       call:"Ring oss",whatsapp:"Skicka meddelande",emailc:"Skicka e-post",copy:"Kopiera",copied:"Kopierat!",
-      form:{name:"Namn",email:"E-post",phone:"Telefon",service:"Tjänst",choose:"Välj tjänst",message:"Meddelande",send:"Skicka meddelande",
-        handoff:"Ditt e-postprogram öppnas med meddelandet färdigt. Skicka det i ditt program, eller mejla till",
-        err:{name:"Ange ditt namn",email:"Ange en giltig e-post",message:"Skriv ett meddelande"},
-        note:"Vi använder dina uppgifter enbart för offerten och delar dem inte vidare."}
     },
     about:{eyebrow:"Om oss",title:"Litet team, stort hjärta för rent",
       lead:"Daris Cleaning är ett lokalt städföretag i Nyland. Vi gör vårt arbete noggrant, ärligt och alltid enligt överenskommelse.",
@@ -697,7 +677,7 @@ const i18n = {
       lead:"Regular or one-off cleaning — pick what you need and we handle the rest.",cta:"Learn more"},
     how:{eyebrow:"How it works",title:"Three steps to spotless",
       steps:[
-        {t:"Get in touch",d:"Call, send a WhatsApp or fill the form. We ask a few details about the space and your needs."},
+        {t:"Get in touch",d:"Call or send us an email or WhatsApp message. Tell us about the space and your needs."},
         {t:"We tailor a plan",d:"You get a clear quote and we agree on a schedule that fits you perfectly."},
         {t:"We clean, you relax",d:"Our team does the work with care and checks the result. Satisfaction guaranteed."}
       ]},
@@ -714,10 +694,6 @@ const i18n = {
     contact:{eyebrow:"Get in touch",title:"Request a free quote",
       lead:"Tell us about the space and your needs and we'll reply soon.",
       call:"Call us",whatsapp:"Send a message",emailc:"Send an email",copy:"Copy",copied:"Copied!",
-      form:{name:"Name",email:"Email",phone:"Phone",service:"Service",choose:"Choose a service",message:"Message",send:"Send message",
-        handoff:"Your email app will open with the message ready. Send it in your email app, or email",
-        err:{name:"Please enter your name",email:"Enter a valid email",message:"Please write a message"},
-        note:"We use your details only for the quote and never share them."}
     },
     about:{eyebrow:"About us",title:"A small team with a big heart for clean",
       lead:"Daris Cleaning is a local cleaning company in Uusimaa. We do our work carefully, honestly and always as agreed.",
@@ -944,7 +920,7 @@ function afterRender(route,slug){
   wireImageFallbacks();
   wireAccordions();
   if(route==="") { initHomeAnimations(); }
-  if(route==="contact") wireForm();
+  if(route==="contact") wireContactActions();
   // magnetic buttons + reveals for every view
   initReveals(); initMagnetic();
   ScrollTrigger && ScrollTrigger.refresh();
@@ -1133,11 +1109,11 @@ function viewAbout(){
   </section>${contactBandMarkup()}<div style="height:clamp(40px,6vw,80px)"></div>`;
 }
 function viewContact(){
-  const c=i18n[LANG]; const f=c.contact.form;
+  const c=i18n[LANG];
   const addrRow = CONFIG.address ? `<a class="ccard" href="${CONFIG.mapsUrl||'#'}" target="_blank" rel="noopener"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><b>${CONFIG.address}</b></a>` : "";
   return `<section class="page-hero wrap section">
     <p class="breadcrumb"><a data-link data-route="" href="${hrefFor('')}">${c.nav.home}</a> / ${c.nav.contact}</p>
-    <div class="about-grid contact-two">
+    <div class="contact-info">
       <div data-reveal-group>
         <span class="eyebrow" data-rv>${c.contact.eyebrow}</span>
         <h1 data-rv style="margin:.6rem 0;max-width:15ch">${c.contact.title}</h1>
@@ -1148,24 +1124,6 @@ function viewContact(){
           <div class="ccard"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><b>${c.contact.emailc}</b><span id="emailShow">${CONFIG.email}</span><button class="copybtn" id="copyEmail" type="button">${c.contact.copy}</button></div>
           ${addrRow}
         </div>
-      </div>
-      <div data-rv>
-        <form id="contactForm" novalidate>
-          <div class="form-grid">
-            <div class="field"><label for="cf-name">${f.name}</label><input id="cf-name" name="name" type="text" autocomplete="name" required><span class="err" data-err="name"></span></div>
-            <div class="field"><label for="cf-email">${f.email}</label><input id="cf-email" name="email" type="email" autocomplete="email" required><span class="err" data-err="email"></span></div>
-            <div class="field"><label for="cf-phone">${f.phone}</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel"><span class="err"></span></div>
-            <div class="field"><label for="cf-service">${f.service}</label>
-              <select id="cf-service" name="service"><option value="">${f.choose}</option>${SERVICES.map(s=>'<option value="'+SVC_COPY[LANG][s.slug][0]+'">'+SVC_COPY[LANG][s.slug][0]+'</option>').join("")}</select><span class="err"></span></div>
-            <div class="field full"><label for="cf-message">${f.message}</label><textarea id="cf-message" name="message" required></textarea><span class="err" data-err="message"></span></div>
-            <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
-            <div class="field full">
-              <button class="btn btn-primary" type="submit" id="cfSubmit" data-magnetic>${f.send} <span class="arr">→</span></button>
-              <p class="form-note" id="formStatus" aria-live="polite" hidden></p>
-              <p class="form-note" style="margin-top:.8rem">${f.note}</p>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
   </section><div style="height:clamp(40px,6vw,80px)"></div>`;
@@ -1304,45 +1262,12 @@ function bubbleCanvas(){
   addEventListener('resize',()=>{ init(); });
 }
 /* =======================================================================
-   FORM
+   CONTACT ACTIONS
    ======================================================================= */
-function wireForm(){
-  const form=document.getElementById('contactForm'); if(!form) return;
+function wireContactActions(){
   const copyBtn=document.getElementById('copyEmail');
   if(copyBtn) copyBtn.addEventListener('click',()=>{ navigator.clipboard.writeText(CONFIG.email).then(()=>{ copyBtn.textContent=i18n[LANG].contact.copied; setTimeout(()=>copyBtn.textContent=i18n[LANG].contact.copy,1600); }); });
-  form.addEventListener('submit',e=>{
-    e.preventDefault();
-    const f=i18n[LANG].contact.form;
-    const data=Object.fromEntries(new FormData(form).entries());
-    // clear errors
-    form.querySelectorAll('.err').forEach(s=>s.textContent='');
-    let ok=true;
-    if(!data.name||!data.name.trim()){ setErr(form,'name',f.err.name); ok=false; }
-    if(!data.email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)){ setErr(form,'email',f.err.email); ok=false; }
-    if(!data.message||!data.message.trim()){ setErr(form,'message',f.err.message); ok=false; }
-    if(data.company) return;
-    if(!ok){ const first=form.querySelector('.err:not(:empty)'); if(first) first.previousElementSibling?.focus?.(); return; }
-    const c=i18n[LANG].contact;
-    const body=[
-      `${f.name}: ${data.name.trim()}`,
-      `${f.email}: ${data.email.trim()}`,
-      data.phone&&`${f.phone}: ${data.phone}`,
-      data.service&&`${f.service}: ${data.service}`,
-      `${f.message}:`,
-      data.message.trim()
-    ].filter(Boolean).join('\n');
-    const mailto=`mailto:${CONFIG.email}?subject=${encodeURIComponent(c.title+" — "+data.name.trim())}&body=${encodeURIComponent(body)}`;
-    const status=form.querySelector('#formStatus');
-    status.replaceChildren(document.createTextNode(f.handoff+" "));
-    const emailLink=document.createElement('a');
-    emailLink.href=mailto;
-    emailLink.textContent=CONFIG.email;
-    status.appendChild(emailLink);
-    status.hidden=false;
-    window.location.href=mailto;
-  });
 }
-function setErr(form,name,msg){ const el=form.querySelector('[data-err="'+name+'"]'); if(el) el.textContent=msg; }
 
 /* =======================================================================
    HEADER hide/show + scrolled, MENU, CURSOR, COOKIE
