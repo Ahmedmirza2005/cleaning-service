@@ -529,7 +529,6 @@ const CONFIG = {
   email: "Dariscleaning1@hotmail.com",
   address: "",                       // empty => address row hidden
   mapsUrl: "",
-  formEndpoint: (location.origin.includes("localhost") ? "http://localhost:8001" : location.origin) + "/api/contact",
   social: [],                        // e.g. [{name:'Facebook', url:'...', icon:'...'}]
   images: {
     hero: "/Home%20page.png",
@@ -624,8 +623,8 @@ const i18n = {
       lead:"Kerro tilasta ja tarpeistasi, niin vastaamme pian.",
       call:"Soita meille",whatsapp:"Laita viesti",emailc:"Lähetä sähköpostia",copy:"Kopioi",copied:"Kopioitu!",
       form:{name:"Nimi",email:"Sähköposti",phone:"Puhelin",service:"Palvelu",choose:"Valitse palvelu",message:"Viesti",send:"Lähetä viesti",
-        okTitle:"Kiitos viestistäsi!",okText:"Olemme sinuun yhteydessä pian. Kiireellisissä asioissa soita 040 624 8666.",
-        err:{name:"Kerro nimesi",email:"Anna kelvollinen sähköposti",message:"Kirjoita viesti",fail:"Lähetys ei onnistunut. Soita 040 624 8666."},
+        handoff:"Sähköpostiohjelmasi avautuu viesti valmiina. Lähetä viesti ohjelmassasi, tai lähetä sähköpostia osoitteeseen",
+        err:{name:"Kerro nimesi",email:"Anna kelvollinen sähköposti",message:"Kirjoita viesti"},
         note:"Täytämme tietosi vain tarjousta varten emmekä jaa niitä eteenpäin."}
     },
     about:{eyebrow:"Meistä",title:"Pieni tiimi, iso sydän puhtaudelle",
@@ -670,8 +669,8 @@ const i18n = {
       lead:"Berätta om utrymmet och dina behov så svarar vi snart.",
       call:"Ring oss",whatsapp:"Skicka meddelande",emailc:"Skicka e-post",copy:"Kopiera",copied:"Kopierat!",
       form:{name:"Namn",email:"E-post",phone:"Telefon",service:"Tjänst",choose:"Välj tjänst",message:"Meddelande",send:"Skicka meddelande",
-        okTitle:"Tack för ditt meddelande!",okText:"Vi kontaktar dig snart. Vid brådska, ring 040 624 8666.",
-        err:{name:"Ange ditt namn",email:"Ange en giltig e-post",message:"Skriv ett meddelande",fail:"Sändningen misslyckades. Ring 040 624 8666."},
+        handoff:"Ditt e-postprogram öppnas med meddelandet färdigt. Skicka det i ditt program, eller mejla till",
+        err:{name:"Ange ditt namn",email:"Ange en giltig e-post",message:"Skriv ett meddelande"},
         note:"Vi använder dina uppgifter enbart för offerten och delar dem inte vidare."}
     },
     about:{eyebrow:"Om oss",title:"Litet team, stort hjärta för rent",
@@ -716,8 +715,8 @@ const i18n = {
       lead:"Tell us about the space and your needs and we'll reply soon.",
       call:"Call us",whatsapp:"Send a message",emailc:"Send an email",copy:"Copy",copied:"Copied!",
       form:{name:"Name",email:"Email",phone:"Phone",service:"Service",choose:"Choose a service",message:"Message",send:"Send message",
-        okTitle:"Thank you for your message!",okText:"We'll be in touch soon. For urgent matters call 040 624 8666.",
-        err:{name:"Please enter your name",email:"Enter a valid email",message:"Please write a message",fail:"Sending failed. Please call 040 624 8666."},
+        handoff:"Your email app will open with the message ready. Send it in your email app, or email",
+        err:{name:"Please enter your name",email:"Enter a valid email",message:"Please write a message"},
         note:"We use your details only for the quote and never share them."}
     },
     about:{eyebrow:"About us",title:"A small team with a big heart for clean",
@@ -1162,11 +1161,11 @@ function viewContact(){
             <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
             <div class="field full">
               <button class="btn btn-primary" type="submit" id="cfSubmit" data-magnetic>${f.send} <span class="arr">→</span></button>
+              <p class="form-note" id="formStatus" aria-live="polite" hidden></p>
               <p class="form-note" style="margin-top:.8rem">${f.note}</p>
             </div>
           </div>
         </form>
-        <div id="formOk" class="form-ok" style="display:none"><h3 style="margin-bottom:.4rem">${f.okTitle}</h3><p style="margin:0;color:var(--muted)">${f.okText}</p></div>
       </div>
     </div>
   </section><div style="height:clamp(40px,6vw,80px)"></div>`;
@@ -1311,7 +1310,7 @@ function wireForm(){
   const form=document.getElementById('contactForm'); if(!form) return;
   const copyBtn=document.getElementById('copyEmail');
   if(copyBtn) copyBtn.addEventListener('click',()=>{ navigator.clipboard.writeText(CONFIG.email).then(()=>{ copyBtn.textContent=i18n[LANG].contact.copied; setTimeout(()=>copyBtn.textContent=i18n[LANG].contact.copy,1600); }); });
-  form.addEventListener('submit',async e=>{
+  form.addEventListener('submit',e=>{
     e.preventDefault();
     const f=i18n[LANG].contact.form;
     const data=Object.fromEntries(new FormData(form).entries());
@@ -1321,18 +1320,29 @@ function wireForm(){
     if(!data.name||!data.name.trim()){ setErr(form,'name',f.err.name); ok=false; }
     if(!data.email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)){ setErr(form,'email',f.err.email); ok=false; }
     if(!data.message||!data.message.trim()){ setErr(form,'message',f.err.message); ok=false; }
-    if(data.company){ /* honeypot filled -> silently succeed */ showOk(form); return; }
+    if(data.company) return;
     if(!ok){ const first=form.querySelector('.err:not(:empty)'); if(first) first.previousElementSibling?.focus?.(); return; }
-    const btn=document.getElementById('cfSubmit'); const prev=btn.innerHTML; btn.disabled=true; btn.textContent='…';
-    try{
-      const res=await fetch(CONFIG.formEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      if(!res.ok) throw new Error('bad');
-      showOk(form);
-    }catch(err){ setErr(form,'message',f.err.fail); btn.disabled=false; btn.innerHTML=prev; }
+    const c=i18n[LANG].contact;
+    const body=[
+      `${f.name}: ${data.name.trim()}`,
+      `${f.email}: ${data.email.trim()}`,
+      data.phone&&`${f.phone}: ${data.phone}`,
+      data.service&&`${f.service}: ${data.service}`,
+      `${f.message}:`,
+      data.message.trim()
+    ].filter(Boolean).join('\n');
+    const mailto=`mailto:${CONFIG.email}?subject=${encodeURIComponent(c.title+" — "+data.name.trim())}&body=${encodeURIComponent(body)}`;
+    const status=form.querySelector('#formStatus');
+    status.replaceChildren(document.createTextNode(f.handoff+" "));
+    const emailLink=document.createElement('a');
+    emailLink.href=mailto;
+    emailLink.textContent=CONFIG.email;
+    status.appendChild(emailLink);
+    status.hidden=false;
+    window.location.href=mailto;
   });
 }
 function setErr(form,name,msg){ const el=form.querySelector('[data-err="'+name+'"]'); if(el) el.textContent=msg; }
-function showOk(form){ form.style.display='none'; const ok=document.getElementById('formOk'); if(ok){ ok.style.display='block'; if(window.gsap&&!prefersReduce) gsap.fromTo(ok,{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:'power3.out'}); } }
 
 /* =======================================================================
    HEADER hide/show + scrolled, MENU, CURSOR, COOKIE
